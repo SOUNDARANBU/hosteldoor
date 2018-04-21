@@ -1,0 +1,113 @@
+
+27 Mar,2018 05:09:25: Database Connected
+27 Mar,2018 05:10:18: Database Connected
+28 Mar,2018 01:21:06: Database Connected
+28 Mar,2018 01:21:46: Database Connected
+28 Mar,2018 02:46:16: Database Connected
+28 Mar,2018 09:06:40: Database Connected
+02 Apr,2018 08:18:42: Database Connected
+02 Apr,2018 08:19:05: Database Connected
+02 Apr,2018 08:19:24: Database Connected
+02 Apr,2018 08:19:48: Database Connected
+02 Apr,2018 08:21:13: Database Connected
+02 Apr,2018 08:27:24: Database Connected
+02 Apr,2018 08:27:42: Database Connected
+02 Apr,2018 08:42:40: Database Connected
+02 Apr,2018 08:45:21: Database Connected
+02 Apr,2018 08:45:37: Database Connected
+18 Apr,2018 03:50:24: Database Connected
+18 Apr,2018 03:50:32: Database Connected
+18 Apr,2018 03:50:39: Database Connected
+18 Apr,2018 04:01:13: Database Connected
+18 Apr,2018 07:15:35: Database Connected
+18 Apr,2018 07:27:45: Database Connected
+18 Apr,2018 07:28:02: Database Connected
+18 Apr,2018 07:29:25: Database Connected
+19 Apr,2018 07:44:14: Database Connected
+19 Apr,2018 08:31:33: Database Connected
+19 Apr,2018 08:32:10: Database Connected
+20 Apr,2018 04:21:20: Database Connected
+20 Apr,2018 04:23:25: Database Connected
+20 Apr,2018 04:28:38: Database Connected
+20 Apr,2018 04:29:35: Database Connected
+20 Apr,2018 04:30:52: Database Connected
+20 Apr,2018 04:31:24: Database Connected
+20 Apr,2018 04:32:09: Database Connected
+20 Apr,2018 04:33:01: Database Connected
+20 Apr,2018 05:06:15: Database Connected
+20 Apr,2018 05:07:06: Database Connected
+20 Apr,2018 05:10:12: Database Connected
+20 Apr,2018 05:29:26: Database Connected
+20 Apr,2018 05:29:57: Database Connected
+20 Apr,2018 05:30:49: Database Connected
+20 Apr,2018 08:20:06: Database Connected
+20 Apr,2018 08:24:21: Database Connected
+20 Apr,2018 08:24:38: Database Connected
+20 Apr,2018 08:25:10: Database Connected
+20 Apr,2018 08:28:41: Database Connected
+20 Apr,2018 08:29:20: Database Connected
+20 Apr,2018 08:31:32: Database Connected
+20 Apr,2018 08:35:21: Database Connected
+20 Apr,2018 08:35:52: Database Connected
+20 Apr,2018 08:36:57: Database Connected
+20 Apr,2018 08:37:55: Database Connected
+20 Apr,2018 08:38:27: Database Connected
+20 Apr,2018 08:52:21: Database Connected
+20 Apr,2018 08:52:57: Database Connected
+20 Apr,2018 08:54:25: Database Connected
+20 Apr,2018 08:55:03: Database Connected
+20 Apr,2018 08:58:31: Database Connected
+20 Apr,2018 08:59:47: #0 D:\portal\hosteldoor\manager\db.php(93): PDOStatement->execute(Array)
+#1 D:\portal\hosteldoor\test.php(10): manager\db->insert_record('config', Object(stdClass))
+#2 {main}
+20 Apr,2018 09:07:03: Database Connected
+20 Apr,2018 09:08:57: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+20 Apr,2018 09:09:02: Database Connected
+20 Apr,2018 09:09:10: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+20 Apr,2018 09:09:44: Database Connected
+20 Apr,2018 09:24:00: Database Connected
+20 Apr,2018 09:24:23: Database Connected
+20 Apr,2018 09:24:50: Database Connected
+20 Apr,2018 09:25:49: Database Connected
+20 Apr,2018 09:28:22: Database Connected
+21 Apr,2018 01:58:18: Database Connected
+21 Apr,2018 02:05:44: Database Connected
+21 Apr,2018 02:08:12: Database Connected
+21 Apr,2018 02:11:45: Database Connected
+21 Apr,2018 02:16:05: Database Connected
+21 Apr,2018 02:17:40: Database Connected
+21 Apr,2018 02:19:44: Database Connected
+21 Apr,2018 02:20:03: Database Connected
+21 Apr,2018 02:20:30: Database Connected
+21 Apr,2018 02:21:08: Database Connected
+21 Apr,2018 02:30:14: Database Connected
+21 Apr,2018 02:31:14: Database Connected
+21 Apr,2018 02:33:08: Database Connected
+21 Apr,2018 02:33:55: Database Connected
+21 Apr,2018 02:41:38: Database Connected
+21 Apr,2018 02:42:24: Database Connected
+21 Apr,2018 02:42:38: Database Connected
+21 Apr,2018 03:00:20: Database Connected
+21 Apr,2018 03:02:17: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
+21 Apr,2018 03:02:43: Database Connected
+21 Apr,2018 03:03:17: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+21 Apr,2018 03:04:26: Database Connected
+21 Apr,2018 03:05:31: Database Connected
+21 Apr,2018 03:05:49: Database Connected
+21 Apr,2018 03:05:51: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '(name = 'echo') WHERE id = '1'' at line 1
+21 Apr,2018 03:06:16: Database Connected
+21 Apr,2018 03:06:17: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '(name = 'echo') WHERE id = '1'' at line 1
+21 Apr,2018 03:08:52: Database Connected
+21 Apr,2018 03:10:28: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '(name = 'echo') WHERE id = '1'' at line 1
+21 Apr,2018 03:10:34: Database Connected
+21 Apr,2018 03:17:55: Database Connected
+21 Apr,2018 03:18:18: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'AND name = 'helo'' at line 1
+21 Apr,2018 03:18:21: Database Connected
+21 Apr,2018 03:25:53: Database Connected
+21 Apr,2018 03:27:03: Database Connected
+21 Apr,2018 03:27:05: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
+21 Apr,2018 03:27:18: Database Connected
+21 Apr,2018 03:27:37: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
+21 Apr,2018 03:27:40: Database Connected
+21 Apr,2018 03:28:07: Database Connected
+21 Apr,2018 03:33:43: Database Connected

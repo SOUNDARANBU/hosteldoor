@@ -2,18 +2,18 @@
 namespace manager;
 
 class log {
-    private static $file;
-    private static $handle;
-    private static function initiate(){
+    private $file;
+    private $handle;
+    public function __construct($file_dir = null)
+    {
         global $C;
-        self::$file = $C->dirroot.'/log.txt';
-        self::$handle = fopen(self::$file, 'a') or die('Cannot Open file'. self::$file);
+        $this->file = isset($file_dir) ? $file_dir : $C->dirroot.'/log.txt';
+        $this->handle = fopen($this->file, 'a') or die('Cannot Open file'. $this->file);
     }
 
-    public static function write_log($log_message){
-        self::initiate();
+    public function write_log($log_message){
         if(isset($log_message)){
-            fwrite(self::$handle,"\n".date('d M,Y h:i:s').': '.$log_message);
+            fwrite($this->handle,"\n".date('d M,Y h:i:s').': '.$log_message);
         }
     }
 }

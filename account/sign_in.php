@@ -1,7 +1,13 @@
 <?php
 require_once('../config.php');
-global $C;
+global $C, $PAGE;
+$page = new \manager\page();
+$page->get_pagename();
 \manager\page::header();
+$PAGE->get_pagename();
+$PAGE->get_pagename();
+$PAGE->get_title();
+
 \manager\page::title('Sign In');
 \manager\page::backgroud_img(true);
 include('../forms/sign_in_form.php');

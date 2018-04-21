@@ -12,7 +12,7 @@ $C->db_type = 'mysql';
 $C->db_name = 'hosteldoor';
 $C->db_host = "localhost";
 $C->db_username = "root";
-$C->db_password = "password";
+$C->db_password = "P@ssw0rd";
 
 //Path Config
 $C->wwwroot = 'http://hosteldoor.com';
@@ -26,5 +26,5 @@ $C->favicon_url ='';
 //SSL
 $C->https = 0;
 
-require('autoload.php');
+//Initialize Application
 require('initialize.php');

@@ -1,6 +1,6 @@
 <div class="container h-100">
     <div class="row h-100 justify-content-center align-items-center">
-        <div class="jumbotron col-md-6 bg-light" style="opacity: 0.9">
+        <div class="jumbotron col-md-6 bg-light">
             <div class="row justify-content-center">
                 <div class="text-center">
                     <h2>Welcome!</h2>
@@ -21,7 +21,7 @@
                             <form id="login-form" action="#" method="post" role="form" style="display: block;">
                                 <div class="form-group">
                                     <input type="text" name="username" id="username" tabindex="1" class="form-control"
-                                           placeholder="Username" value="">
+                                           placeholder="Username or Email" value="">
                                 </div>
                                 <div class="form-group">
                                     <input type="password" name="password" id="password" tabindex="2"
@@ -51,7 +51,7 @@
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="text-center">
-                                                <a href="#" id="register-form-link">Not yet signed up? Register</a>
+                                                <a href="#" id="register-form-link">Not a member yet? Sign Up!</a>
                                             </div>
                                         </div>
                                     </div>

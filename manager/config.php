@@ -2,11 +2,15 @@
 namespace manager;
 
 class config {
-    public static function set() {
+    public function set() {
 
     }
 
-    public static function get() {
+    public function get() {
+
+    }
+
+    public function get_all_configs(){
 
     }
 }
