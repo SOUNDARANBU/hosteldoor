@@ -1,16 +1,19 @@
 <?php
 require_once('../config.php');
-global $C, $PAGE;
-$page = new \manager\page();
-$page->get_pagename();
-\manager\page::header();
-$PAGE->get_pagename();
-$PAGE->get_pagename();
-$PAGE->get_title();
-
-\manager\page::title('Sign In');
-\manager\page::backgroud_img(true);
+global $C, $PAGE, $USER;
+$PAGE->header();
+$PAGE->title('Sign In');
+$PAGE->backgroud_img(true);
+if(isset($_POST['register-submit'])){
+    $status_obj = $USER->process_signup();
+}elseif(isset($_POST['login-submit'])){
+    $status_obj = $USER->process_signin();
+    if($status_obj->status){
+        $PAGE->redirect($C->wwwroot.'/views/dashboard.php');
+    }
+}
+echo "<div class='alert alert-success'>$status_obj->message</div>";
 include('../forms/sign_in_form.php');
-\manager\page::add_style($C->wwwroot.'/account/style/sign_in.css');
-\manager\page::footer();
-\manager\page::add_script($C->wwwroot.'/account/script/sign_in.js');
+$PAGE->add_style($C->wwwroot.'/account/style/sign_in.css');
+$PAGE->footer();
+$PAGE->add_script($C->wwwroot.'/account/script/sign_in.js');

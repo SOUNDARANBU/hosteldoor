@@ -1,0 +1,149 @@
+
+.body-content{
+    display: flex;
+    padding-top: 70px;
+    background-color: #f9fafb !important;
+}
+/**
+Top Navigation Bar------------------
+ */
+#sidebar-toggle{
+    margin-right: 5px;
+}
+.nav-brand-holder{
+    position:absolute;
+    margin-left: 70px;
+
+}
+.nav-right-items{
+    position: absolute;
+    right: 0;
+    margin-right: 10px;
+    width: 200px;
+}
+
+.nav-pills .nav-link {
+    border-radius: 0 !important;
+}
+
+.nav-link:hover{
+    background-color: #f0f0f0;
+}
+
+.user-options-dropdown{
+    position: absolute;
+    left: auto;
+    right: 5%;
+    z-index: 2;
+}
+
+a:hover{
+    text-decoration: none;
+}
+/**
+--------------------------------------
+Sidemenubar
+ */
+#sidebar{
+    width: 250px;
+    height: 100%;
+    transition: all 0.3s;
+    border: 1px #4e555b;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    padding-top: 60px;
+}
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+/**
+For Mobile devices
+ */
+@media screen and (max-width: 450px){
+    #sidebar{
+        width: 250px;
+        height: 100vh;
+        transition: all 0.3s;
+        border: 1px #4e555b;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        position:fixed;
+        padding-top: 70px;
+    }
+}
+
+#sidebar.active{
+    margin-left: -250px;
+}
+
+.shadow{
+    box-shadow: 0.5px 0.5px 5px lightgray;
+    border: none;
+}
+
+/*Sidebar*/
+
+.sidebar-icon{
+    padding: 5px;
+    margin:5px;
+    float: right;
+}
+
+.sidebar-menu{
+    padding:5px;
+    margin:5px;
+    float: left;
+}
+
+/*
+Info Box
+ */
+
+.box-container{
+    display: flex;
+    padding:20px;
+    margin: 5px;
+    height: auto;
+    width: 100%;
+    border: 0.5px lightblue solid;
+    background-color: white;
+}
+
+/**
+Body Container
+ */
+.body-main{
+    margin: 10px;
+    width:100%;
+    margin-left: 260px;
+    transition: all 0.3s;
+}
+
+.body-main.active{
+    margin-left: 10px;
+}
+
+/**
+Utilities
+ */
+.img-rounded{
+    border-radius: 50%;
+}
+
+.user-profile-pic{
+    position:relative;
+    margin-bottom: 10px;
+}
+
+.notification-icon{
+    position: relative;
+    top: 0;
+    bottom: 0;
+}

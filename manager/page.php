@@ -46,4 +46,7 @@ class page {
         require($C->dirroot.'/theme/includes/topnav.php');
     }
 
+    public function redirect($url, $params = [], $method = 'get'){
+        header('Location:'. $url);
+    }
 }

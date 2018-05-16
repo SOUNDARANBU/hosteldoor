@@ -3,7 +3,7 @@
 namespace manager;
 /**
  * Class db
- * The Easy to Use PDO inspired from moodle from framework
+ * A simple PDO driver for MySql, MariaDB inspired from moodle from framework
  * @package manager
  */
 class db
@@ -16,6 +16,9 @@ class db
     public $dbtype;
     public $is_connected = false;
 
+    /**
+     * db constructor that takes value from the config file
+     */
     public function __construct()
     {
         global $C;
@@ -24,9 +27,12 @@ class db
         $this->username = $C->db_username;
         $this->password = $C->db_password;
         $this->dbtype = $C->db_type;
-
+        $this->connect();
     }
 
+    /**
+     * Connects to the database
+     */
     public function connect()
     {
         global $LOG;
@@ -43,7 +49,9 @@ class db
         }
     }
 
-
+    /**
+     * Creates new table from the specified schema
+     */
     public function create_tables()
     {
         global $C, $DB;
@@ -54,6 +62,9 @@ class db
         }
     }
 
+    /**
+     * Alters table from the query
+     */
     public function alter_tables()
     {
         global $C;
@@ -64,6 +75,11 @@ class db
         }
     }
 
+    /** Updates a single record
+     * @param $table_name
+     * @param $record -> object
+     * @return int
+     */
     public function update_record($table_name, $record)
     {
         if ($this->table_exists($table_name) && isset($record->id) && $record->id > 0) {
@@ -93,7 +109,13 @@ class db
         }
     }
 
-    public function update_record_param($table_name, $set, $where)
+    /** Updates set clause of single/multiple records that matches where clause
+     * @param $table_name
+     * @param array $set
+     * @param array $where
+     * @return int
+     */
+    public function update_record_param($table_name, $set = [], $where = [])
     {
         if ($this->table_exists($table_name) && isset($set) && isset($where)) {
             $set_sql = '';
@@ -130,12 +152,11 @@ class db
         }
     }
 
-
-    public function update_records($table_name, $params = [])
-    {
-
-    }
-
+    /** Insert the record in the given table
+     * @param $table_name
+     * @param $record -> (object)
+     * @return int
+     */
     public function insert_record($table_name, $record)
     {
         if ($this->table_exists($table_name)) {
@@ -167,11 +188,13 @@ class db
         }
     }
 
-    public function insert_records($table_name, $params = [])
-    {
-        //TODO
-    }
-
+    /** To get multiple records that matches a certain condition
+     * @param $table_name
+     * @param array $params
+     * @param null $fields -> TODO
+     * @param null $sort -> TODO
+     * @return bool
+     */
     public function get_records($table_name, $params = [], $fields = null, $sort = null)
     {
         if (isset($table_name) && $this->table_exists($table_name)) {
@@ -197,7 +220,13 @@ class db
         }
     }
 
-
+    /** To get a single record from a table
+     * @param $table_name
+     * @param array $params -> should be unique identifier
+     * @param null $fields
+     * @param null $sort
+     * @return bool
+     */
     public function get_record($table_name, $params = [], $fields = null, $sort = null)
     {
         if (isset($table_name) && $this->table_exists($table_name)) {
@@ -221,12 +250,21 @@ class db
             $data->setFetchMode(\PDO::FETCH_OBJ);
             //fetch the result
             $result = $data->fetchAll();
-            return $result[0];
+            if(sizeof($result) > 0){
+                return $result[0];
+            }else{
+                return false;
+            }
         } else {
             return false;
         }
     }
 
+    /** To get records from sql query
+     * @param $sql
+     * @param array $params
+     * @return bool
+     */
     public function get_records_sql($sql, $params = [])
     {
         if (isset($sql)) {
@@ -240,9 +278,12 @@ class db
         } else {
             return false;
         }
-
     }
 
+    /** Checks if the given table exist in the database
+     * @param $table_name
+     * @return bool
+     */
     public function table_exists($table_name)
     {
         if (isset($table_name)) {
@@ -255,9 +296,13 @@ class db
             }
             return false;
         }
-        //show tables like 'config'
     }
 
+    /** Checks where the columns exists in a table
+     * @param $table_name
+     * @param $column_name
+     * @return bool
+     */
     public function column_exists($table_name, $column_name)
     {
         if (isset($table_name) && isset($column_name)) {
@@ -272,12 +317,18 @@ class db
         }
     }
 
-
-    public function upgrade_db()
+    /**
+     * Creates new tables, alter tables in the db
+     */
+    public function update_db()
     {
-
+        $this->create_tables();
+        $this->alter_tables();
     }
 
+    /** deletes all the data in a table
+     * @param $table_name
+     */
     public function empty_table($table_name)
     {
         if (isset($table_name)) {
@@ -290,6 +341,11 @@ class db
 
     }
 
+    /** deletes records in a table
+     * @param $table_name
+     * @param array $where - array of fields & values -> to delete based on a condition
+     * @return int
+     */
     public function delete_records($table_name, $where = [])
     {
         if ($this->table_exists($table_name) && isset($where)) {
@@ -320,9 +376,13 @@ class db
         } else {
             return 0;
         }
-
     }
 
+    /**To get the table schema
+     * @param $table_name
+     * @param bool $return_columns - returns only column names as array, if true
+     * @return array|bool
+     */
     public function get_table_schema($table_name, $return_columns = false)
     {
         if (isset($table_name) && $this->table_exists($table_name)) {

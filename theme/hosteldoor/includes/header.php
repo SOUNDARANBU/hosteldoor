@@ -11,11 +11,8 @@ global $C, $PAGE;
     <link rel="icon" href="../../../../favicon.ico">
 
     <!-- Bootstrap core CSS -->
-    <?php $PAGE->add_style($C->wwwroot . "/theme/resources/style/bootstrap.min.css");
-    $PAGE->add_style($C->wwwroot . "/theme/resources/style/theme.css");
-    $PAGE->add_style($C->wwwroot . "/theme/resources/style/ionicons.min.css");
-    ?>
-
+    <?php $PAGE->add_style($C->wwwroot."/theme/resources/style/bootstrap.min.css"); ?>
+    
     <!-- Custom styles for this template -->
 </head>
 
