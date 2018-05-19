@@ -7,4 +7,3 @@ $LOG = new \manager\log();
 $PAGE = new \manager\page();
 $DB = new \manager\db();
 $USER = new \manager\user();
-$_SESSION['USER'] = $USER;

@@ -12,7 +12,7 @@
             <ul class="dropdown-menu user-options-dropdown">
                 <li class="dropdown-item"><a class="" href="#">My Profile</a> </li>
                 <li class="dropdown-item list-unstyled"><a href="#">Account Settings</a></li>
-                <li class="dropdown-item list-unstyled"><a href="#">Log Out</a></li>
+                <li class="dropdown-item list-unstyled"><a href="/account/signout.php">Log Out</a></li>
             </ul>
         </li>
     </ul>

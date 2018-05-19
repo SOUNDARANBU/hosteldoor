@@ -15,6 +15,8 @@ function get_create_tables_sql(){
                                                      email VARCHAR(255) DEFAULT NULL,
                                                      mobile VARCHAR(255) DEFAULT NULL,
                                                      city VARCHAR(255) DEFAULT NULL,
+                                                     active INT DEFAULT(1) NULL,
+                                                     deleted INT DEFAULT(0) NULL,
                                                      timecreated BIGINT DEFAULT NULL
                                                      )',
         'role' => 'CREATE TABLE IF NOT EXISTS hdr_role(

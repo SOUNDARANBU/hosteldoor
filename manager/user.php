@@ -4,16 +4,32 @@ namespace manager;
 
 class user{
     public $id;
-    public $name;
+    public $firstname;
+    public $lastname;
     public $email;
     public $username;
     public $dob;
     public $mobile;
-    public $is_authenticated = false;
-    public $is_loggedin = false;
     public $last_login;
-    public $is_active;
-    public $is_deleted;
+    public $active;
+    public $deleted;
+
+    public function __construct()
+    {
+        if(isset($_SESSION['USER'])){
+            $user = $_SESSION['USER'];
+            $this->id = $user->id;
+            $this->firstname = $user->firstname;
+            $this->lastname = $user->lastname;
+            $this->email = $user->email;
+            $this->username = $user->email;
+            $this->dob = $user->dob;
+            $this->mobile = $user->mobile;
+            $this->last_login = $user->last_login;
+            $this->active = $user->active;
+            $this->deleted = $user->deleted;
+        }
+    }
 
     public function signin(){
 
@@ -113,11 +129,19 @@ class user{
         }
         if(!$break){
             $user = $DB->get_record('hdr_user',['username' => $_POST['username']]);
-
             //check if the user is found in db
             if($user){
-                //check if password matche
-                if(!password_verify($_POST['password'], $user->password)){
+                //check if password matches
+                if(password_verify($_POST['password'], $user->password)){
+                   $this->id = $user->id;
+                    $this->username = $user->username;
+                    $this->email = $user->email;
+                    $this->firstname = $user->firstname;
+                    $this->lastname = $user->lastname;
+                    $this->active = $user->active;
+                    $this->deleted =$user->deleted;
+                    $_SESSION['USER'] = $this;
+                }else{
                     $status->message = "Please enter correct password";
                     $status->status = false;
                 }
@@ -127,5 +151,33 @@ class user{
             }
         }
         return $status;
+    }
+
+    public function process_signout(){
+        if(isset($_SESSION['USER'])){
+            $_SESSION['USER'] = null;
+            global $USER;
+            $USER = new user();
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public function is_signedin(){
+        if(issest($_SESSION('USER'))){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function require_signin(){
+        global $USER, $PAGE, $C;
+        if(isset($USER->id) && $USER->id > 0){
+            return;
+        }else{
+            $PAGE->redirect($C->wwwroot. '/account/sign_in.php');
+        }
     }
 }

@@ -1,6 +1,7 @@
 <?php
 require_once('../config.php');
-global $C, $PAGE;
+global $C, $PAGE, $USER;
+$USER->require_signin();
 $PAGE->title('Dashboard');
 $PAGE->header();
 $PAGE->topnav();

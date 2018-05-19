@@ -4,6 +4,7 @@ global $C, $PAGE, $USER;
 $PAGE->header();
 $PAGE->title('Sign In');
 $PAGE->backgroud_img(true);
+$status_obj = new stdClass();
 if(isset($_POST['register-submit'])){
     $status_obj = $USER->process_signup();
 }elseif(isset($_POST['login-submit'])){
