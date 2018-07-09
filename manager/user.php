@@ -31,12 +31,52 @@ class user{
         }
     }
 
-    public function signin(){
-
+    /**
+     * Get user by id
+     * @param string|int $user_id
+     * @return bool|object
+     */
+    public static function get_user_by_id($user_id)
+    {
+        global $DB;
+        $user = $DB->get_record('user', ['id' => $user_id]);
+        return $user;
     }
 
-    public function signout(){
+    /**
+     * Get user by username
+     * @param string $user_name
+     * @return bool|object
+     */
+    public static function get_user_by_username($user_name)
+    {
+        global $DB;
+        $user = $DB->get_record('user', ['username' => $user_name]);
+        return $user;
+    }
 
+    /**
+     * Get user by mobile number
+     * @param $user_mobile_number
+     * @return bool|object
+     */
+    public static function get_user_by_mobile_number($user_mobile_number)
+    {
+        global $DB;
+        $user = $DB->get_record('user', ['mobile' => $user_mobile_number]);
+        return $user;
+    }
+
+    /**
+     * Get user by email
+     * @param $user_email
+     * @return bool|object
+     */
+    public static function get_user_by_email($user_email)
+    {
+        global $DB;
+        $user = $DB->get_record('user', ['email' => $user_email]);
+        return $user;
     }
 
     public function get_profilepic(){
@@ -89,7 +129,8 @@ class user{
             $user->email = $_POST['email'];
             $user->password = password_hash($_POST['password'], PASSWORD_DEFAULT);
             if($this->create_user($user)){
-                   $status->message = "User Created Successfully";
+                    $this->send_signup_email();
+                   $status->message = "Please check your email to verify your identity.";
                    $status->status = true;
             }else{
                 $status->message = "User Sign Up failed";
@@ -107,6 +148,7 @@ class user{
         $user->email = $user_data->email;
         $user->mobile = '';
         $user->timecreated = time();
+        $user->active = 0;
         $userid = $DB->insert_record('hdr_user', $user);
         if($userid > 0){
             return $userid;
@@ -177,7 +219,34 @@ class user{
         if(isset($USER->id) && $USER->id > 0){
             return;
         }else{
-            $PAGE->redirect($C->wwwroot. '/account/sign_in.php');
+            $PAGE->redirect($C->wwwroot. '/account/signin.php');
         }
+    }
+
+    public function send_signup_email($userid){
+        $link = $this->create_signup_link($userid);
+        email::send_email((object)[
+            'fromemail' => 'admin@madnuos.tk',
+            'fromusername' => 'Admin',
+            'toemail' => 'soundar.a@mqspectrum.com',
+            'tousername' => 'Soundar',
+            'subject' => 'Confirm User Registration',
+            'body'      => 'Please click this link to verify the email'
+        ]);
+    }
+
+    public function create_signup_link($userid){
+        global $C;
+        $token = time();
+        sodium_crypto_box();
+        return "$C->wwwroot/app/user/verify.php?token=";
+    }
+
+    public function create_password_reset_link(){
+
+    }
+
+    public function send_password_reset_email(){
+
     }
 }

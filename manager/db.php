@@ -15,6 +15,7 @@ class db
     public $password;
     public $dbtype;
     public $is_connected = false;
+    public $table_prefix = '';
 
     /**
      * db constructor that takes value from the config file
@@ -27,6 +28,7 @@ class db
         $this->username = $C->db_username;
         $this->password = $C->db_password;
         $this->dbtype = $C->db_type;
+        $this->table_prefix = $C->db_table_prefix;
         $this->connect();
     }
 
@@ -42,7 +44,6 @@ class db
                 //set the PDO error mode to exception
                 $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
                 $this->is_connected = true;
-                $LOG->write_log("Database Connected");
             } catch (\PDOException $e) {
                 $LOG->write_log($e->getTraceAsString());
             }
@@ -82,6 +83,7 @@ class db
      */
     public function update_record($table_name, $record)
     {
+        $table_name = $this->get_table_name_with_prefix($table_name);
         if ($this->table_exists($table_name) && isset($record->id) && $record->id > 0) {
             $set = '';
             $new_record = [];
@@ -117,6 +119,7 @@ class db
      */
     public function update_record_param($table_name, $set = [], $where = [])
     {
+        $table_name = $this->get_table_name_with_prefix($table_name);
         if ($this->table_exists($table_name) && isset($set) && isset($where)) {
             $set_sql = '';
             $where_sql = '';
@@ -159,6 +162,7 @@ class db
      */
     public function insert_record($table_name, $record)
     {
+        $table_name = $this->get_table_name_with_prefix($table_name);
         if ($this->table_exists($table_name)) {
             $fields = '';
             $values = '';
@@ -189,7 +193,7 @@ class db
     }
 
     /** To get multiple records that matches a certain condition
-     * @param $table_name
+     * @param string $table_name
      * @param array $params
      * @param null $fields -> TODO
      * @param null $sort -> TODO
@@ -197,6 +201,7 @@ class db
      */
     public function get_records($table_name, $params = [], $fields = null, $sort = null)
     {
+        $table_name = $this->get_table_name_with_prefix($table_name);
         if (isset($table_name) && $this->table_exists($table_name)) {
             $select = '*';
             $where = '';
@@ -204,8 +209,11 @@ class db
             //prepare the query
             foreach ($params as $field => $value) {
                 $count++;
-                $where .= $count == 1 ? ($field . ' = :' . $field) : ('AND ' . $field . ' :' . $field);
+                $where .= $count == 1 ? ($field . ' = :' . $field) : (' AND ' . $field . ' = :' . $field);
             }
+            //if there are no condition for the where clause
+            if (empty($where)) $where = 1;
+
             $sql = 'SELECT ' . $select . ' FROM ' . $table_name . ' WHERE ' . $where;
             //prepare the sql
             $data = $this->pdo->prepare($sql);
@@ -229,6 +237,7 @@ class db
      */
     public function get_record($table_name, $params = [], $fields = null, $sort = null)
     {
+        $table_name = $this->get_table_name_with_prefix($table_name);
         if (isset($table_name) && $this->table_exists($table_name)) {
             $select = '*';
             $where = '';
@@ -236,23 +245,19 @@ class db
             //prepare the query
             foreach ($params as $field => $value) {
                 $count++;
-                $where .= $count == 1 ? ($field . ' = :' . $field) : ('AND ' . $field . ' :' . $field);
+                $where .= $count == 1 ? ("$field = :$field") : (" AND $field = :$field");
             }
             $sql = 'SELECT ' . $select . ' FROM ' . $table_name . ' WHERE ' . $where;
             //prepare the sql
             $data = $this->pdo->prepare($sql);
-            // bind the params
-            foreach ($params as $field => $value) {
-                $data->bindParam(':' . $field, $value);
-            }
             //execute
-            $data->execute();
+            $data->execute($params);
             $data->setFetchMode(\PDO::FETCH_OBJ);
             //fetch the result
             $result = $data->fetchAll();
-            if(sizeof($result) > 0){
+            if (sizeof($result) > 0) {
                 return $result[0];
-            }else{
+            } else {
                 return false;
             }
         } else {
@@ -286,6 +291,7 @@ class db
      */
     public function table_exists($table_name)
     {
+        $table_name = $this->get_table_name_with_prefix($table_name);
         if (isset($table_name)) {
             $sql = 'show tables like \'' . $table_name . '\'';
             $data = $this->pdo->query($sql)->fetchAll(\PDO::FETCH_COLUMN);
@@ -306,7 +312,7 @@ class db
     public function column_exists($table_name, $column_name)
     {
         if (isset($table_name) && isset($column_name)) {
-            $columns = $this->get_table_schema($table_name, true);
+            $columns = $this->get_table_schema($this->get_table_name_with_prefix($table_name), true);
             if (is_array($column_name, $columns)) {
                 return true;
             } else {
@@ -332,7 +338,7 @@ class db
     public function empty_table($table_name)
     {
         if (isset($table_name)) {
-            $this->delete_records($table_name, []);
+            $this->delete_records($this->get_table_name_with_prefix($table_name), []);
         }
     }
 
@@ -348,19 +354,26 @@ class db
      */
     public function delete_records($table_name, $where = [])
     {
+        $table_name = $this->get_table_name_with_prefix($table_name);
         if ($this->table_exists($table_name) && isset($where)) {
             $where_sql = '';
             $count = 0;
             $table_columns = $this->get_table_schema($table_name, true);
             $new_record = [];
-            foreach ($where as $field => $value) {
-                if (in_array($field, $table_columns) && $field != 'id') {
-                    $count++;
-                    $where_sql .= $count == 1 ? ($field . ' = :' . $field) : (' AND ' . $field . ' = :' . $field);
-                    $new_record[$field] = $value;
+            if (isset($where['id'])) {
+                $where_sql = 'id = :id';
+                $new_record['id'] = $where['id'];
+            } else {
+                foreach ($where as $field => $value) {
+                    if (in_array($field, $table_columns) && $field != 'id') {
+                        $count++;
+                        $where_sql .= $count == 1 ? ($field . ' = :' . $field) : (' AND ' . $field . ' = :' . $field);
+                        $new_record[$field] = $value;
+                    }
                 }
             }
-            if (sizeof($where) > 0) {
+
+            if (sizeof($where) > 0 && !empty($where_sql)) {
                 $sql = 'DELETE FROM ' . $table_name . ' WHERE ' . $where_sql;
             } else {
                 $sql = 'DELETE FROM ' . $table_name;
@@ -386,7 +399,7 @@ class db
     public function get_table_schema($table_name, $return_columns = false)
     {
         if (isset($table_name) && $this->table_exists($table_name)) {
-            $sql = 'describe ' . $table_name;
+            $sql = 'describe ' . $this->get_table_name_with_prefix($table_name);
             $data = $this->pdo->query($sql)->fetchAll();
             if ($return_columns) {
                 $columns = [];
@@ -399,5 +412,21 @@ class db
         } else {
             return false;
         }
+    }
+
+    /**
+     * To add append the table name with the prefix
+     * @param string $table_name name of the table
+     * @return string table name
+     */
+    public function get_table_name_with_prefix($table_name)
+    {
+        if (!empty($this->table_prefix) && !empty($table_name)) {
+            $prefix = $this->table_prefix . '_';
+            if (!(substr($table_name, 0, strlen($prefix)) === $prefix)) {
+                return $prefix . $table_name;
+            }
+        }
+        return $table_name;
     }
 }
