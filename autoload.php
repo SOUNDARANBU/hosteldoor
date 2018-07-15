@@ -1,20 +1,27 @@
 <?php
-spl_autoload_register(function($class) {
-    $prefix = 'manager\\';
+spl_autoload_register('autoload_classes');
 
-    $length = strlen($prefix);
-
-    $base_directory = __DIR__ . '/manager/';
-
-    if(strncmp($prefix, $class, $length) !== 0) {
-        return;
+function autoload_classes($classname){
+    global $C;
+    if(!isset($C->classes)){
+        $Directory = new RecursiveDirectoryIterator($C->dirroot);
+        $Iterator = new RecursiveIteratorIterator($Directory);
+        $objects = new RegexIterator($Iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
+        $C->classes = array();
+        foreach($objects as $filepath => $arr){
+            $filename = basename($filepath);
+            $C->classes[$filename] = $filepath;
+        }
     }
 
-    $class_end = substr($class, $length);
-
-    $file = $base_directory . str_replace('\\', '/', $class_end) . '.php';
-
-    if(file_exists($file)) {
-        require $file;
+    //check for namespace
+    $classname_pos = strpos($classname, "\\");
+    if($classname_pos !== false){
+        $classname = substr($classname, $classname_pos + 1);
     }
-});
+
+    $classfile = $classname . '.php';
+    if(isset($C->classes[$classfile])){
+        require $C->classes[$classfile];
+    }
+}
