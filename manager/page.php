@@ -11,25 +11,29 @@ class page {
     public $footer;
     public $sidemenu;
     
-    public function backgroud_img($visible){
-        if($visible){
+    public function backgroud_img($visible) {
+        if($visible) {
             global $C;
             $this->add_style($C->wwwroot."/theme/resources/style/general.css");
         }
     }
+
     public function add_style($style_path){
         if(isset($style_path)){
             echo '<link href="'.$style_path.'" rel="stylesheet">';
         }
     }
+
     public function add_script($script_path){
         if(isset($script_path)){
             echo '<script src="'.$script_path.'"></script>';
         }
     }
+
     public function title($title){
-        if(isset($title)){
             echo '<title>'.$title.'</title>';
+        if(isset($title)){
+
         }
     }
 
@@ -37,16 +41,28 @@ class page {
         global $C;
         require($C->dirroot.'/theme/includes/header.php');
     }
+
     public function footer(){
         global $C;
         require($C->dirroot.'/theme/includes/footer.php');
     }
+
     public function topnav(){
         global $C;
         require($C->dirroot.'/theme/includes/topnav.php');
     }
 
-    public function redirect($url, $params = [], $method = 'get'){
+    public function redirect($url, $params = [], $method = 'get') {
         header('Location:'. $url);
+    }
+
+    public static function optional_param($param_name, $default = null){
+        if(isset($_GET[$param_name])){
+            return $_GET[$param_name];
+        }
+        if(isset($_POST[$param_name])){
+            return $_POST[$param_name];
+        }
+        return $default;
     }
 }

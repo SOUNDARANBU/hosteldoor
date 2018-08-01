@@ -11,7 +11,7 @@ if (isset($_POST['register-submit'])) {
 } elseif (isset($_POST['login-submit'])) {
     $status_obj = $USER->process_signin();
     if ($status_obj->status) {
-        $PAGE->redirect($C->wwwroot . '/views/dashboard.php');
+        $PAGE->redirect($C->wwwroot . '/system/dashboard.php');
     }else{
         echo "<div class='alert alert-success'>$status_obj->message</div>";
     }

@@ -4,7 +4,7 @@
         <a class="navbar-brand" href="#">Bootstrap</a>
     </div>
     <ul class="nav navbar nav-right-items">
-        <span class="text-white"> Soundar Anbu</span>
+        <span class="text-white"> <?php global $USER; echo $USER->firstname; ?></span>
         <li class="dropdown">
             <a data-toggle="dropdown" href="#">
                 <img class="user-picture img-rounded" src="/theme/resources/image/user-default.png" width="40px" height="40px"/>

@@ -17,7 +17,7 @@ $C->db_table_prefix = 'hdr';
 
 //Path Config
 $C->wwwroot = 'http://hosteldoor.com';
-$C->dirroot = 'D:\\portal\\hosteldoor';
+$C->dirroot = 'D:\\portal\\hosteldoor-github';
 
 //Site Config
 $C->site_name = 'Hostel Door';

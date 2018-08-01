@@ -144,9 +144,11 @@ class user{
         //create user object
         $user = new \stdClass();
         $user->username = $user_data->username;
+        $user->firstname = isset($user_data->firstname) ? $user_data->firstname : $user->username;
+        $user->lastname = isset($user_data->lastname) ? $user_data->lastname : '';
         $user->password = $user_data->password;
         $user->email = $user_data->email;
-        $user->mobile = '';
+        $user->mobile = isset($user_data->mobile) ? $user_data->mobile : '';
         $user->timecreated = time();
         $user->active = 0;
         $userid = $DB->insert_record('hdr_user', $user);
@@ -155,6 +157,23 @@ class user{
         } else{
             return false;
         }
+    }
+
+    public function update_user($user_data){
+        global $DB;
+        //create user object
+        $user = new \stdClass();
+        $user->id = $user_data->id;
+        $user->username = $user_data->username;
+        $user->firstname = isset($user_data->firstname) ? $user_data->firstname : $user->username;
+        $user->lastname = isset($user_data->lastname) ? $user_data->lastname : '';
+        $user->password = $user_data->password;
+        $user->email = $user_data->email;
+        $user->mobile = isset($user_data->mobile) ? $user_data->mobile : '';
+        $user->timecreated = time();
+        $user->active = 0;
+        $status = $DB->update_record('hdr_user', $user);
+        return $status ? true : false;
     }
 
     public function process_signin(){
@@ -248,5 +267,16 @@ class user{
 
     public function send_password_reset_email(){
 
+    }
+
+    public static function get_users($onlyactive = false){
+        global $DB;
+        $params = array();
+        if($onlyactive){
+            $params['active'] = 1;
+        }
+
+        $users = $DB->get_records('user', $params);
+        return $users;
     }
 }

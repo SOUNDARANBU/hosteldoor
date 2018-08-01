@@ -13,7 +13,11 @@ global $C, $PAGE;
     <!-- Bootstrap core CSS -->
     <?php $PAGE->add_style($C->wwwroot . "/theme/resources/style/bootstrap.min.css");
     $PAGE->add_style($C->wwwroot . "/theme/resources/style/theme.css");
+    $PAGE->add_style($C->wwwroot . "/theme/resources/style/jquery.dataTables.min.css");
     $PAGE->add_style($C->wwwroot . "/theme/resources/style/ionicons.min.css");
+    $PAGE->add_script($C->wwwroot . "/theme/resources/script/jquery-3.3.1.min.js");
+    $PAGE->add_script($C->wwwroot . "/theme/resources/script/bootstrap.bundle.min.js");
+    $PAGE->add_script($C->wwwroot . "/theme/resources/script/jquery.dataTables.min.js");
     ?>
 
     <!-- Custom styles for this template -->
