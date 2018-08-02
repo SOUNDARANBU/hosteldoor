@@ -18,7 +18,8 @@ if (isset($action)) {
             $user->lastname = \manager\page::optional_param('lastname');
             $user->email = \manager\page::optional_param('email');
             $user->mobile = \manager\page::optional_param('mobile');
-            $user->password = password_hash(\manager\page::optional_param('password'), PASSWORD_DEFAULT);
+            $password = \manager\page::optional_param('password');
+            $user->password = isset($password) ? password_hash($password, PASSWORD_DEFAULT) : '';
 
             $submit = \manager\page::optional_param('register-submit');
             if (empty($user->id)) {
@@ -28,6 +29,30 @@ if (isset($action)) {
             } else {
                 if (\manager\user::update_user($user)) {
                     $result->data = "User updated successfully";
+                }
+            }
+            break;
+        case 'get_permissions':
+            $result->data = \manager\permisssion::get_all_permissions();
+            break;
+        case 'get_roles':
+            $result->data = \manager\role::get_all_roles();
+            break;
+        case 'create_role':
+            $role = new stdClass();
+            $role->id = \manager\page::optional_param('role_id');
+            $role->name = \manager\page::optional_param('role_name');
+            $role->description = \manager\page::optional_param('role_description');
+            $role->level = \manager\page::optional_param('role_level');
+
+            $result->data = "Action failed";
+            if (empty($role->id)) {
+                if (\manager\role::add_role($role->name, $role->description, $role->level)) {
+                    $result->data = "Role created successfully";
+                }
+            } else {
+                if (\manager\role::update_role($role)) {
+                    $result->data = "Role updated successfully";
                 }
             }
             break;

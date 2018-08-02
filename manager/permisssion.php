@@ -11,9 +11,10 @@ namespace manager;
 
 class permisssion
 {
+    public $all_permissions;
     public function __construct()
     {
-
+        $this->all_permissions = self::get_all_permissions('name');
     }
 
     /**
@@ -52,12 +53,21 @@ class permisssion
 
     /**
      * Get all the permissions in the system
+     * @param null|string $array_key
      * @return bool|array of objects
      */
-    public static function get_all_permissions()
+    public static function get_all_permissions($array_key = null)
     {
         global $DB;
         $permissions = $DB->get_records('permissions');
+        if(!empty($array_key)){
+            $permissions_new = array();
+            foreach ($permissions as $permission){
+                $permission = (object)$permission;
+                $permissions_new[$permission->name] = $permission;
+            }
+            return $permissions_new;
+        }
         return $permissions;
     }
 

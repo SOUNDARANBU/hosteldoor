@@ -89,8 +89,8 @@ class role
     {
         global $DB;
         $user_role_assigned = $DB->get_record('role_assignment', ['userid' => $user_id, 'roleid' => $role_id]);
-        if(isset($user_role_assigned->id)){
-            $DB->delete_records('role_assignment' , ['id' => $user_role_assigned->id]);
+        if (isset($user_role_assigned->id)) {
+            $DB->delete_records('role_assignment', ['id' => $user_role_assigned->id]);
             return true;
         }
         return false;
@@ -105,7 +105,7 @@ class role
      * Get all the roles in the system
      * @return bool|array of objects
      */
-    public function get_all_roles()
+    public static function get_all_roles()
     {
         global $DB;
         $roles = $DB->get_records('role');
@@ -136,8 +136,28 @@ class role
         return $role;
     }
 
+    /**
+     * To check if the role is assigned to the user
+     * @param $role_id
+     * @param $userid
+     */
     public function check_role_assigned($role_id, $userid)
     {
         global $DB;
+    }
+
+    /**
+     * Update the role data
+     * @param object $role
+     * @return bool
+     */
+    public static function update_role($role)
+    {
+        if (isset($role->id)) {
+            global $DB;
+            $status = $DB->update_record('role', $role);
+            return $status;
+        }
+        return false;
     }
 }

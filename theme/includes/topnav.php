@@ -7,7 +7,7 @@
         <span class="text-white"> <?php global $USER; echo $USER->firstname; ?></span>
         <li class="dropdown">
             <a data-toggle="dropdown" href="#">
-                <img class="user-picture img-rounded" src="/theme/resources/image/user-default.png" width="40px" height="40px"/>
+                <img class="user-picture img-rounded" src="<? echo "$C->wwwroot/theme/resources/image/user-default.png";?>" width="40px" height="40px"/>
             </a>
             <ul class="dropdown-menu user-options-dropdown">
                 <li class="dropdown-item"><a class="" href="#">My Profile</a> </li>

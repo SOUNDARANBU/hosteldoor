@@ -1,6 +1,9 @@
 <?php
 
 namespace manager;
+
+use PHPMailer\PHPMailer\Exception;
+
 /**
  * Class db
  * A simple PDO driver for MySql, MariaDB inspired from moodle from framework
@@ -55,11 +58,20 @@ class db
      */
     public function create_tables()
     {
-        global $C, $DB;
+        global $C;
         require_once($C->dirroot . '/db/create_tables.php');
         foreach (get_create_tables_sql() as $table_name => $table_sql) {
-            $this->pdo->exec($table_sql);
-            echo $table_name . ' created succussfully <br>';
+            if ($this->table_exists($table_name)) {
+                echo $table_name . ' already exists <br>';
+            } else {
+                try {
+                    $this->pdo->exec($table_sql);
+                    echo $table_name . ' created succussfully <br>';
+                } catch (Exception $e) {
+                    echo "Error Occured: " . $e->getMessage() . '<br>';
+                    echo $e->getTraceAsString();
+                }
+            }
         }
     }
 
@@ -71,8 +83,13 @@ class db
         global $C;
         require_once($C->dirroot . '/db/alter_tables.php');
         foreach (get_alter_tables_sql() as $table_name => $alter_table_sql) {
-            $this->pdo->exec($alter_table_sql);
-            echo $table_name . ' altered succussfully <br>';
+            try {
+                $this->pdo->exec($alter_table_sql);
+                echo $table_name . ' altered succussfully <br>';
+            } catch (\Exception $e) {
+                echo "Error Occured: " . $e->getMessage() . '<br>';
+                echo $e->getTraceAsString();
+            }
         }
     }
 

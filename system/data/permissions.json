@@ -1,0 +1,48 @@
+{
+  "user": [
+    {
+      "name": "create",
+      "description": "Create User"
+    },
+    {
+      "name": "view",
+      "description": "View User"
+    },
+    {
+      "name": "edit",
+      "description": "Edit User"
+    },
+    {
+      "name": "delete",
+      "description": "Delete User"
+    }
+  ],
+  "role": [
+    {
+      "name": "create",
+      "description": "Create role"
+    },
+    {
+      "name": "view",
+      "description": "View role"
+    },
+    {
+      "name": "edit",
+      "description": "Edit role"
+    },
+    {
+      "name": "delete",
+      "description": "Delete role"
+    }
+  ],
+  "permission": [
+    {
+      "name": "assign",
+      "description": "assign name to role"
+    },
+    {
+      "name": "unassign",
+      "description": "unassign name to role"
+    }
+  ]
+}
