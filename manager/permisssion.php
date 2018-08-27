@@ -12,6 +12,7 @@ namespace manager;
 class permisssion
 {
     public $all_permissions;
+
     public function __construct()
     {
         $this->all_permissions = self::get_all_permissions('name');
@@ -53,16 +54,16 @@ class permisssion
 
     /**
      * Get all the permissions in the system
-     * @param null|string $array_key
+     * @param null|string $array_key this is the field name which will be used as the array key
      * @return bool|array of objects
      */
     public static function get_all_permissions($array_key = null)
     {
         global $DB;
         $permissions = $DB->get_records('permissions');
-        if(!empty($array_key)){
+        if (!empty($array_key)) {
             $permissions_new = array();
-            foreach ($permissions as $permission){
+            foreach ($permissions as $permission) {
                 $permission = (object)$permission;
                 $permissions_new[$permission->name] = $permission;
             }
@@ -74,13 +75,33 @@ class permisssion
     /**
      * Get all the permissions assigned to a role
      * @param $role_id
+     * @param string $type 'assigned' | 'unassigned'
      * @return bool|object
      */
-    public static function get_role_permissions($role_id)
+    public static function get_role_permissions($role_id, $type = 'assigned')
     {
         global $DB;
-        $permissions = $DB->get_records('permission_assignment', ['roleid' => $role_id]);
-        return $permissions;
+        if ($type == 'assigned') {
+            $sql = 'select p.* 
+                    from hdr_permissions p, hdr_permission_assignment pa
+                    where p.id = pa.permissionid and pa.roleid = :roleid';
+            try {
+                $assigned_role_permissions = $DB->get_records_sql($sql, ['roleid' => $role_id]);
+                return $assigned_role_permissions;
+            } catch (\Exception $e) {
+                return false;
+            }
+        }
+
+        if ($type == 'unassigned') {
+            $sql = 'select p1.* 
+                from hdr_permissions p1
+                where p1.id not in (select p.id from hdr_permissions p, hdr_permission_assignment pa
+                                    where p.id = pa.permissionid and pa.roleid = :roleid)';
+            $unassigned_role_permissions = $DB->get_records_sql($sql, ['roleid' => $role_id]);
+            return $unassigned_role_permissions;
+        }
+        return false;
     }
 
     /**
@@ -127,14 +148,15 @@ class permisssion
      * @param $permission_id
      * @return bool|int
      */
-    public static function assign_permission_to_role($role_id, $permission_id){
+    public static function assign_permission_to_role($role_id, $permission_id)
+    {
         global $DB;
         //check if role exists
         $role = role::get_role_by_id($role_id);
         //check if permission exists
         $permission = self::get_permission_by_id($permission_id);
 
-        if($role && $permission){
+        if ($role && $permission) {
             global $DB;
             //check if role is already assigned
             $permission_assigned = $DB->get_record('permission_assignment', ['roleid' => $role_id, 'permissionid' => $permission_id]);
@@ -146,6 +168,32 @@ class permisssion
                 $record->timemodified = time();
                 $assign_id = $DB->insert_record('permission_assignment', $record);
                 return $assign_id;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Unassign permission to a role
+     * @param $role_id
+     * @param $permission_id
+     * @return bool|int
+     */
+    public static function unassign_permission_to_role($role_id, $permission_id)
+    {
+        global $DB;
+        //check if role exists
+        $role = role::get_role_by_id($role_id);
+        //check if permission exists
+        $permission = self::get_permission_by_id($permission_id);
+
+        if ($role && $permission) {
+            global $DB;
+            //check if permission is assigned to the role
+            $permission_assigned = $DB->get_record('permission_assignment', ['roleid' => $role_id, 'permissionid' => $permission_id]);
+            if ($permission_assigned) {
+                $status = $DB->delete_records('permission_assignment', (array)$permission_assigned);
+                return $status;
             }
         }
         return false;

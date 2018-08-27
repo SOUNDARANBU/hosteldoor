@@ -5,6 +5,11 @@ $PAGE->header();
 $PAGE->title('Sign In');
 $PAGE->backgroud_img(true);
 $status_obj = new stdClass();
+
+if(isset($USER->id)){
+    $PAGE->redirect($C->wwwroot . '/system/dashboard.php');
+}
+
 if (isset($_POST['register-submit'])) {
     $status_obj = $USER->process_signup();
     echo "<div class='alert alert-success'>$status_obj->message</div>";

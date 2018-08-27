@@ -139,7 +139,7 @@ class user{
         return $status;
     }
 
-    public function create_user($user_data){
+    public static function create_user($user_data){
         global $DB;
         //create user object
         $user = new \stdClass();
@@ -159,7 +159,7 @@ class user{
         }
     }
 
-    public function update_user($user_data){
+    public static function update_user($user_data){
         global $DB;
         //create user object
         $user = new \stdClass();

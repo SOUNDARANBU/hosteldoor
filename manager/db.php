@@ -290,13 +290,17 @@ class db
     public function get_records_sql($sql, $params = [])
     {
         if (isset($sql)) {
-            $data = $this->pdo->prepare($sql);
-            isset($params) ? $data->execute($params) : $data->execute();
-            $data->setFetchMode(\PDO::FETCH_ASSOC);
-            //fetch the result
-            $result = $data->fetchAll();
-            //returns array of object
-            return $result;
+            try {
+                $data = $this->pdo->prepare($sql);
+                isset($params) ? $data->execute($params) : $data->execute();
+                $data->setFetchMode(\PDO::FETCH_ASSOC);
+                //fetch the result
+                $result = $data->fetchAll();
+                //returns array of object
+                return $result;
+            } catch (\Exception $e) {
+                return false;
+            }
         } else {
             return false;
         }

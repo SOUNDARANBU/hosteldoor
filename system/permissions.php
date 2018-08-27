@@ -29,7 +29,7 @@ layout\system::start();
             var permissions_list_table = $("#permissions_list").DataTable({
                 "serverside": true,
                 ajax: {
-                    url: '<?php echo $C->wwwroot . "/system/api.php?action=get_permissions"; ?>'
+                    url: '<?php echo $C->wwwroot . "/system/api.php?action=get_all_permissions"; ?>'
                 },
 
                 columns: [

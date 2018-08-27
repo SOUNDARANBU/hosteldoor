@@ -33,7 +33,26 @@ if (isset($action)) {
             }
             break;
         case 'get_permissions':
+            $role_id = \manager\page::optional_param('role_id');
+            $type = \manager\page::optional_param('type');
+            $result->data = \manager\permisssion::get_role_permissions($role_id, $type);
+            break;
+        case 'get_all_permissions':
             $result->data = \manager\permisssion::get_all_permissions();
+            break;
+        case 'unassign_permissions':
+            $permission_ids = explode(',', \manager\page::optional_param('permission_ids'));
+            $role_id = \manager\page::optional_param('role_id');
+            foreach ($permission_ids as $permission_id) {
+                $result->data .= (string)\manager\permisssion::unassign_permission_to_role($role_id, $permission_id);
+            }
+            break;
+        case 'assign_permissions':
+            $permission_ids = explode(',', \manager\page::optional_param('permission_ids'));
+            $role_id = \manager\page::optional_param('role_id');
+            foreach ($permission_ids as $permission_id) {
+                $result->data .= (string)\manager\permisssion::assign_permission_to_role($role_id, $permission_id);
+            }
             break;
         case 'get_roles':
             $result->data = \manager\role::get_all_roles();
