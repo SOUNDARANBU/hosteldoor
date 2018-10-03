@@ -32,6 +32,10 @@ if (isset($action)) {
                 }
             }
             break;
+        case 'get_user_permissions':
+            $user_id = \manager\page::optional_param('userid');
+            $result->data = \manager\permisssion::get_user_permissions($user_id);
+            break;
         case 'get_permissions':
             $role_id = \manager\page::optional_param('role_id');
             $type = \manager\page::optional_param('type');
@@ -73,6 +77,21 @@ if (isset($action)) {
                 if (\manager\role::update_role($role)) {
                     $result->data = "Role updated successfully";
                 }
+            }
+            break;
+        case 'get_user_roles':
+            $userid = \manager\page::optional_param('userid');
+            $type = \manager\page::optional_param('type', 'assigned');
+            $result->data = \manager\role::get_user_roles($userid, $type);
+            break;
+        case 'assign_role':
+            $role_id = \manager\page::optional_param('role_id');
+            $user_id = \manager\page::optional_param('user_id');
+            $assign  = \manager\role::assign_user_role($user_id, $role_id);
+            if($assign){
+                $result->data = "Role assigned successfully";
+            }else{
+                $result->data = "Failed to assign role";
             }
             break;
         default:

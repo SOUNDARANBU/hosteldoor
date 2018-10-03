@@ -51,8 +51,8 @@ $PAGE->title("Users");
                         <h3>Users List</h3>
                     </div>
                     <div class="col-2">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Create
-                            User
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                           <span><i class="ion ion-person-add"></i></span> &nbsp; New User
                         </button>
                     </div>
                 </div>
@@ -157,16 +157,22 @@ $PAGE->title("Users");
                     {
                         "data": "id",
                         "render": function (data, type, row, meta) {
-                            return '<span class="m-2"><i class="ion ion-edit edit_btn" title="edit user"></i></span>' +
-                                '<span class="m-2"><i class="ion ion-android-delete delete_btn" title="delete user"></i>' +
-                                '<span class="m-2"><i class="ion ion-eye visible_btn" title="disable/enable user"></i>';
+                            return '<li class="dropdown list-unstyled">' +
+                                '<a data-toggle="dropdown" href="#">' +
+                                '<span class="badge badge-info">Options</span>'+
+                                '</a>'+
+                                '<ul class="dropdown-menu user-options-dropdown">'+
+                                '<li class="dropdown-item" id="edit">Edit</li>'+
+                                '<li class="dropdown-item list-unstyled" id="manage_user">Manage</li>'+
+                                '<li class="dropdown-item list-unstyled">Delete</li>'+
+                            '</ul></li>';
 
                         }
                     }
                 ]
             });
 
-            $('#users_list').on('click', 'tbody .edit_btn', function () {
+            $('#users_list').on('click', 'tbody #edit', function () {
                 $("#user-modal-title").text("Update User");
                 $("#register-submit").val("Update User");
                 $("#myModal").modal('toggle');
@@ -177,6 +183,12 @@ $PAGE->title("Users");
                 $("#email").val(data_row.email);
                 $("#mobile").val(data_row.mobile);
                 $("#userid").val(data_row.id);
+            });
+
+            $('#users_list').on('click', 'tbody #manage_user', function () {
+                var data_row = users_list_table.row($(this).closest('tr')).data();
+                var url = '<? echo "$C->wwwroot/system/manage_user.php?userid=";?>';
+                window.location.href = url + data_row.id;
             });
 
             $("#register-update-form").on('submit', function (e) {

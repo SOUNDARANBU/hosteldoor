@@ -10,7 +10,7 @@
                 <img class="user-picture img-rounded" src="<? echo "$C->wwwroot/theme/resources/image/user-default.png";?>" width="40px" height="40px"/>
             </a>
             <ul class="dropdown-menu user-options-dropdown">
-                <li class="dropdown-item"><a class="" href="#">My Profile</a> </li>
+                <li class="dropdown-item"><a class="" href="<? echo "$C->wwwroot/system/manage_user.php?userid=$USER->id" ?>">My Profile</a> </li>
                 <li class="dropdown-item list-unstyled"><a href="#">Account Settings</a></li>
                 <li class="dropdown-item list-unstyled"><a href="<? echo "$C->wwwroot/account/signout.php"; ?>">Log Out</a></li>
             </ul>

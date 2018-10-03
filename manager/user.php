@@ -96,7 +96,7 @@ class user{
     }
 
     public function process_signup(){
-        global $DB;
+        global $DB, $C;
         $status = new \stdClass();
         $status->message = "";
         $status->status = true;
@@ -128,8 +128,9 @@ class user{
             $user->username = $_POST['username'];
             $user->email = $_POST['email'];
             $user->password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-            if($this->create_user($user)){
-                    $this->send_signup_email();
+            $user->id = $this->create_user($user);
+            if($user->id > 0 && $C->send_signup_email){
+                    $this->send_signup_email($user);
                    $status->message = "Please check your email to verify your identity.";
                    $status->status = true;
             }else{
@@ -242,23 +243,23 @@ class user{
         }
     }
 
-    public function send_signup_email($userid){
-        $link = $this->create_signup_link($userid);
+    public function send_signup_email($user){
+        global $C;
+        $link = $this->create_signup_link($user->id);
         email::send_email((object)[
-            'fromemail' => 'admin@madnuos.tk',
-            'fromusername' => 'Admin',
-            'toemail' => 'soundar.a@mqspectrum.com',
-            'tousername' => 'Soundar',
+            'fromemail' => $C->site_email,
+            'fromusername' => $C->site_username,
+            'toemail' => $user->email,
+            'tousername' => $user->username,
             'subject' => 'Confirm User Registration',
-            'body'      => 'Please click this link to verify the email'
+            'body'      => "Please click the below link to verify the email. <br> $link <br><br> $C->site_username"
         ]);
     }
 
     public function create_signup_link($userid){
         global $C;
-        $token = time();
-        sodium_crypto_box();
-        return "$C->wwwroot/app/user/verify.php?token=";
+        $token = base64_encode(time() + '_' + $userid);
+        return "$C->wwwroot/app/user/verify.php?token=$token";
     }
 
     public function create_password_reset_link(){

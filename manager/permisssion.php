@@ -112,8 +112,9 @@ class permisssion
     public static function get_user_permissions($user_id)
     {
         global $DB;
-        $sql = 'select * from hdr_permission_assigment pa, hdr_role_assignment ra
-                where pa.roleid = ra.roleid and ra.userid = :userid';
+        $sql = 'select p.* 
+                from hdr_permission_assignment pa, hdr_permissions p, hdr_role_assignment ra
+                where pa.roleid = ra.roleid and pa.permissionid = p.id and ra.userid = :userid';
         $user_permissions = $DB->get_records_sql($sql, ['userid' => $user_id]);
         return $user_permissions;
     }

@@ -96,9 +96,35 @@ class role
         return false;
     }
 
-    public function get_user_roles($user_id)
+    /**
+     * Get all the roles that are asssigned/ unassigned to the user
+     * @param int $user_id id of the user
+     * @param string $type 'assigned' or 'unassigned'
+     * @return object|bool returns roles or false if roles not found
+     */
+    public static function get_user_roles($user_id, $type = 'assigned')
     {
+        $roles = false;
+        if (isset($user_id)) {
+            global $DB;
+            if ($type == 'assigned') {
+                $sql = "select r.*
+                        from hdr_role_assignment ra, hdr_role r
+                        where ra.roleid = r.id and ra.userid = :userid";
+            }
+            if ($type == 'unassigned') {
+                $sql = "select r.*
+                        from hdr_role r
+                        where r.id not in ( select r1.id from hdr_role r1, hdr_role_assignment ra
+                                                where ra.userid = :userid and ra.roleid = r1.id)";
+            }
+            try {
+                $roles = $DB->get_records_sql($sql, ['userid' => $user_id]);
+            } catch (\Exception $e) {
 
+            }
+        }
+        return $roles;
     }
 
     /**
