@@ -19,6 +19,28 @@ class permisssion
     }
 
     /**
+     * Check if the user have the permission
+     * @param string $permissionname name of the permission
+     * @param int $userid id of the user
+     * @return bool
+     */
+    public static function user_has_permission($permissionname, $userid)
+    {
+        if (isset($permissionname) && isset($userid)) {
+            global $DB;
+            $sql = 'select distinct p.*
+                    from hdr_role_assignment ra, hdr_permission_assignment pa, hdr_permissions p
+                    where ra.roleid = pa.roleid and 
+                          pa.permissionid = p.id and
+                          ra.userid = :userid and 
+                          p.name = :permissionname';
+            $permission = $DB->get_records_sql($sql, ['userid' => $userid, 'permissionname' => $permissionname]);
+            return $permission ? true : false;
+        }
+        return false;
+    }
+
+    /**
      * Adds a new permission in the database
      * @param string $name
      * @param string $description

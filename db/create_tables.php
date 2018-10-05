@@ -17,8 +17,10 @@ function get_create_tables_sql(){
                                                      city VARCHAR(255) DEFAULT NULL,
                                                      active INT DEFAULT(1) NULL,
                                                      deleted INT DEFAULT(0) NULL,
+                                                     confirmed INT DEFAULT(0) NULL,
                                                      timecreated BIGINT DEFAULT NULL,
-                                                     timemodified BIGINT DEFAULT NULL
+                                                     timemodified BIGINT DEFAULT NULL,
+                                                     CONSTRAINT Uni_user UNIQUE(id, username, email)
                                                      )',
         'user_settings' => 'CREATE TABLE IF NOT EXISTS hdr_user_settings(
                                                      id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

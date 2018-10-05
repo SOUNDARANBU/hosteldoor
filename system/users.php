@@ -2,13 +2,18 @@
 require_once('../config.php');
 $PAGE->title("Users");
 \layout\system::start();
+$total_users =  sizeof(\manager\user::get_users());
+$active_users =  sizeof(\manager\user::get_users(true));
+$inactive_users = $total_users - $active_users;
+$deleted_users =  sizeof(\manager\user::get_deleted_users());
+
 ?>
 
     <div class="card-deck">
         <div class="card shadow mb-2">
             <div class="card-body text-center">
                         <span class="bg-info">
-                            <h1><?php echo sizeof(\manager\user::get_users()); ?></h1>
+                            <h1><?php echo $total_users; ?></h1>
                         </span>
                 <p class="card-text">Total Users</p>
 
@@ -18,7 +23,7 @@ $PAGE->title("Users");
         <div class="card shadow mb-2">
             <div class="card-body text-center">
                         <span class="bg-info">
-                            <h1><?php echo sizeof(\manager\user::get_users(true)); ?></h1>
+                            <h1><?php echo $active_users; ?></h1>
                         </span>
                 <p class="card-text">Active Users</p>
             </div>
@@ -27,18 +32,18 @@ $PAGE->title("Users");
         <div class="card shadow  mb-2">
             <div class="card-body text-center">
                          <span class="bg-info">
-                            <h1>1</h1>
+                            <h1><? echo $inactive_users; ?></h1>
                         </span>
-                <p class="card-text">Suspended Users</p>
+                <p class="card-text">Inactive Users</p>
             </div>
         </div>
 
         <div class="card shadow  mb-2">
             <div class="card-body text-center">
                          <span class="bg-info">
-                            <h1>1</h1>
+                            <h1><? echo $deleted_users; ?></h1>
                         </span>
-                <p class="card-text">Expired Users</p>
+                <p class="card-text">Deleted Users</p>
             </div>
         </div>
     </div>
@@ -51,7 +56,7 @@ $PAGE->title("Users");
                         <h3>Users List</h3>
                     </div>
                     <div class="col-2">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                        <button type="button" class="btn btn-primary" id="new_user_btn">
                            <span><i class="ion ion-person-add"></i></span> &nbsp; New User
                         </button>
                     </div>
@@ -149,9 +154,9 @@ $PAGE->title("Users");
                         "data": "active",
                         "render": function (data, type, row, meta) {
                             if (data == 0)
-                                return "Inactive"
+                                return "<span class=\"badge-pill badge-danger\">Inactive</span>"
                             else
-                                return "Active";
+                                return "<span class=\"badge-pill badge-success\">Active</span>";
                         }
                     },
                     {
@@ -159,17 +164,25 @@ $PAGE->title("Users");
                         "render": function (data, type, row, meta) {
                             return '<li class="dropdown list-unstyled">' +
                                 '<a data-toggle="dropdown" href="#">' +
-                                '<span class="badge badge-info">Options</span>'+
+                                '<span class="badge-pill badge-info">Options</span>'+
                                 '</a>'+
                                 '<ul class="dropdown-menu user-options-dropdown">'+
-                                '<li class="dropdown-item" id="edit">Edit</li>'+
-                                '<li class="dropdown-item list-unstyled" id="manage_user">Manage</li>'+
-                                '<li class="dropdown-item list-unstyled">Delete</li>'+
+                                '<li class="dropdown-item" id="edit"><a href="#">Edit</a></li>'+
+                                '<li class="dropdown-item list-unstyled" id="manage_user"><a href="#">Manage</a></li>'+
+                                '<li class="dropdown-item list-unstyled"><a href="#">Delete</a></li>'+
                             '</ul></li>';
 
                         }
                     }
                 ]
+            });
+
+            $('#new_user_btn').on('click', function () {
+                $('#register-update-form')[0].reset();
+                $("#userid").val('');
+                $("#user-modal-title").text("Create User");
+                $("#register-submit").val("Create User");
+                $("#myModal").modal('toggle');
             });
 
             $('#users_list').on('click', 'tbody #edit', function () {
@@ -200,6 +213,7 @@ $PAGE->title("Users");
                     url: post_url,
                     success: function(data){
                         $("#myModal").modal('toggle');
+                        $('#register-update-form')[0].reset();
                         $.notify({
                             // options
                             message: (JSON.parse(data)).data.toString()

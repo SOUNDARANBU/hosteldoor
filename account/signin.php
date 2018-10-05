@@ -11,10 +11,10 @@ if(isset($USER->id)){
 }
 
 if (isset($_POST['register-submit'])) {
-    $status_obj = $USER->process_signup();
+    $status_obj = \manager\user::process_signup();
     echo "<div class='alert alert-success'>$status_obj->message</div>";
 } elseif (isset($_POST['login-submit'])) {
-    $status_obj = $USER->process_signin();
+    $status_obj = \manager\user::process_signin();
     if ($status_obj->status) {
         $PAGE->redirect($C->wwwroot . '/system/dashboard.php');
     }else{

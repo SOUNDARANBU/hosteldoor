@@ -56,5 +56,16 @@ HTML;
         echo "</div>";
         $PAGE->footer();
     }
+
+    public static function get_pages(){
+        global $C;
+        $pages = array(
+            'Dashboard' => "$C->wwwroot/system/dashboard.php",
+            'Roles' => "$C->wwwroot/system/roles.php",
+            'Permissions' => "$C->wwwroot/system/permission.php",
+            'Settings' => "$C->wwwroot/system/settings.php",
+        );
+        return $pages;
+    }
 }
 ?>

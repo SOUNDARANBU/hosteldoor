@@ -7,7 +7,12 @@ $userid = \manager\page::optional_param('userid');
 $user = \manager\user::get_user_by_id($userid);
 
 ?>
-
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">User</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Profile</li>
+        </ol>
+    </nav>
     <div class="row">
         <div class="col col-md-4 ">
             <div class="text-center">
@@ -34,7 +39,7 @@ $user = \manager\user::get_user_by_id($userid);
                 </tr>
                 <tr>
                     <th>Status</th>
-                    <td><? echo $user->status ?></td>
+                    <td><? echo user_renderer::render_status($user->active) ?></td>
                 </tr>
                 <tr>
                     <th>Last Signin</th>
@@ -49,10 +54,17 @@ $user = \manager\user::get_user_by_id($userid);
             <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
                aria-controls="pills-home" aria-selected="true">Activities</a>
         </li>
+        <?
+        if(\manager\permisssion::user_has_permission('role_view', $USER->id)){
+            echo <<<HTML
         <li class="nav-item">
             <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
                aria-controls="pills-profile" aria-selected="false">Roles</a>
         </li>
+HTML;
+        }
+        ?>
+
         <li class="nav-item">
             <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab"
                aria-controls="pills-contact" aria-selected="false">Permissions</a>
@@ -73,10 +85,21 @@ $user = \manager\user::get_user_by_id($userid);
                         <div class="row">
                             <div class="m-2">
                                 <h4>Manage Roles</h4>
+                                <small>Here are the list of roles assigned to the user. Permissions associated with the roles will be allowed to this user.</small>
                             </div>
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col col-md-5">
+                            <h6>Assigned Roles</h6>
+                            <hr>
+                            <ul class="list-group list-unstyled" id="assigned_roles_list">
+                                <li class="list-group-item">
+                                    Loading...
+                                </li>
+
+                            </ul>
+                        </div>
                         <div class="col col-md-5">
                             <h6>Assign New Role</h6>
                             <hr>
@@ -93,16 +116,7 @@ $user = \manager\user::get_user_by_id($userid);
                             </form>
 
                         </div>
-                        <div class="col col-md-5">
-                            <h6>Assigned Roles</h6>
-                            <hr>
-                            <ul class="list-group list-unstyled" id="assigned_roles_list">
-                                <li class="list-group-item">
-                                    Loading...
-                                </li>
 
-                            </ul>
-                        </div>
                     </div>
 
                 </div>
@@ -113,8 +127,10 @@ $user = \manager\user::get_user_by_id($userid);
                 <div class="card-body">
                     <div class="card-title">
                         <div class="row">
-                            <div class="col-2">
+                            <div class="col-12">
                                 <h3>Permissions</h3>
+                                <small>List of all the permissions allowed to the user.<br>
+                                    Note: Permissions can only be assigned to the role. It cannot be assigned straight to the user</small>
                             </div>
                         </div>
                     </div>
@@ -123,6 +139,7 @@ $user = \manager\user::get_user_by_id($userid);
                         <tr>
                             <th>Permission Name</th>
                             <th>Description</th>
+                            <th>Status</th>
                         </tr>
                         </thead>
                     </table>
@@ -139,7 +156,13 @@ $user = \manager\user::get_user_by_id($userid);
 
                         columns: [
                             {"data": "name"},
-                            {"data": "description"}
+                            {"data": "description"},
+                            {
+                                "data": "",
+                                "render": function (data, type, row, meta) {
+                                    return "<span class=\"badge badge-pill badge-success\">Allowed</span>";
+                                }
+                            },
                         ]
                     });
                     render_role_assign_select_options();
@@ -147,24 +170,56 @@ $user = \manager\user::get_user_by_id($userid);
                     $("#role_assign_form").on('submit', function (e) {
                         var post_url = '<?php echo $C->wwwroot . "/system/api.php?action=assign_role"; ?>';
                         e.preventDefault();
-                        $.ajax({
-                            type: 'post',
-                            data: $("#role_assign_form").serialize(),
-                            url: post_url,
-                            success: function (data) {
-                                $.notify({
-                                    // options
-                                    message: 'Role assigned successfully'
-                                }, {
-                                    // settings
-                                    type: 'success'
-                                });
-                                render_assigned_roles();
-                                render_role_assign_select_options();
-                                $("#permissions_list").DataTable().ajax.reload();
-                            }
-                        })
-                        ;
+                        if (get_selected_role_id() < 1) {
+                            $.notify({
+                                // options
+                                message: 'No role selected to assign.'
+                            }, {
+                                // settings
+                                type: 'danger'
+                            });
+                        } else {
+                            $.ajax({
+                                type: 'post',
+                                data: $("#role_assign_form").serialize(),
+                                url: post_url,
+                                success: function (data) {
+                                    $.notify({
+                                        // options
+                                        message: 'Role assigned successfully'
+                                    }, {
+                                        // settings
+                                        type: 'success'
+                                    });
+                                    render_assigned_roles();
+                                    render_role_assign_select_options();
+                                    refresh_permissions_list();
+                                }
+                            });
+                        }
+                    });
+
+                    $("#assigned_roles_list").on('click','.remove-role', function (e){
+                       var role_id = $(this).attr('id');
+                       var post_url = '<?php echo $C->wwwroot . "/system/api.php?action=remove_user_role"; ?>';
+                       if(role_id > 0){
+                           $.ajax({
+                               type: 'post',
+                               data: {'role_id': role_id, 'user_id': <? echo $userid; ?>},
+                               url: post_url,
+                               success: function (data) {
+                                   var result = JSON.parse(data);
+                                   console.dir(result);
+                                   $.notify({
+                                       // options
+                                       message: result.data
+                                   });
+                               }
+                           });
+                           render_assigned_roles();
+                           render_role_assign_select_options();
+                           refresh_permissions_list();
+                       }
                     });
                 });
 
@@ -197,7 +252,7 @@ $user = \manager\user::get_user_by_id($userid);
                             roles.forEach(function (role) {
                                 assigned_roles_html += '<li class="list-group-item">\n' +
                                     '                                    <span class="mr-2"><i class="ion ion-checkmark-circled text-success"></i></span>\n' +
-                                    '                                    <span class=" float-right position-relative"><a href="#">Remove</a></span>\n' +
+                                    '                                    <span class="float-right position-relative"><a class="remove-role" id="'+ role.id +'" href="#">Remove</a></span>\n' +
                                     '                                    <span><bold>' + role.name + ' </bold></span>\n' +
                                     '                                    <br>\n' +
                                     '                                    <span><small>' + role.description + '</small></span>\n' +
@@ -211,6 +266,13 @@ $user = \manager\user::get_user_by_id($userid);
                             $("#assigned_roles_list").html(assigned_roles_html);
                         }
                     });
+                }
+                function refresh_permissions_list(){
+                    $("#permissions_list").DataTable().ajax.reload();
+                }
+
+                function get_selected_role_id() {
+                    return $("#role_assign_select").val();
                 }
             </script>
         </div>

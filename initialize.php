@@ -7,3 +7,11 @@ $LOG = new \manager\log();
 $PAGE = new \manager\page();
 $DB = new \manager\db();
 $USER = new \manager\user();
+
+
+/*
+ * DEFINE GLOBAL CONSTANTS HERE
+ */
+
+define("SUCCESS", 1);
+define("FAIL", 0);
