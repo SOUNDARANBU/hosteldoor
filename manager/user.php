@@ -125,11 +125,11 @@ class user
             $result->status = FAIL;
         }
 
-        //check passwords set
-        if ($result->status == SUCCESS && empty($user->password) && empty($user->confirm_password)) {
-            $result->message = "Password is not set";
-            $result->status = FAIL;
-        }
+//        //check passwords set
+//        if ($result->status == SUCCESS && empty($user->password) && empty($user->confirm_password)) {
+//            $result->message = "Password is not set";
+//            $result->status = FAIL;
+//        }
 
         //check if the email is valid
         if ($result->status == SUCCESS && !util::is_valid_email($user->email)) {
@@ -217,9 +217,11 @@ class user
             $user->deleted = 0;
             unset($user->confirm_password);
             $user->id = self::create_user($user);
-            if ($user->id > 0 && $C->send_signup_email) {
-                self::send_signup_email($user);
-                $status->message = "Please check your email to verify your identity.";
+            if ($user->id > 0) {
+                $status->message = "Signed Up Successfully. Enter you credentials to login.";
+                if (self::send_signup_email($user)) {
+                    $status->message = "Please check your email to verify your identity.";
+                }
                 $status->status = SUCCESS;
             } else {
                 $status->message = "User Sign Up failed";
@@ -246,7 +248,8 @@ class user
         global $DB;
         //get user record
         $user = $DB->get_record('user', ['id' => $user_data->id]);
-        $result = SUCCESS;
+        $result = new \stdClass();
+        $result->status = SUCCESS;
         if ($user) {
             $validation = self::validate_existing_user($user_data);
             if ($validation->status == SUCCESS) {
@@ -259,7 +262,7 @@ class user
                 $user->timemodified = time();
                 $user->active = isset($user_data->active) ? $user_data->active : $user->active;
                 $user->deleted = isset($user_data->deleted) ? $user_data->deleted : $user->deleted;
-
+                $user->password = !empty($user_data->password) ? password_hash($user_data->password, PASSWORD_DEFAULT) : $user->password;
 
                 $status = $DB->update_record('hdr_user', $user);
                 $result->status = $status ? SUCCESS : FAIL;
@@ -312,7 +315,7 @@ class user
 
     public function is_signedin()
     {
-        if (issest($_SESSION('USER'))) {
+        if (isset($_SESSION['USER'])) {
             return true;
         } else {
             return false;
@@ -323,7 +326,7 @@ class user
     {
         global $USER, $PAGE, $C;
         if (isset($USER->id) && $USER->id > 0) {
-            return;
+            return true;
         } else {
             $PAGE->redirect($C->wwwroot . '/account/signin.php');
         }
@@ -332,15 +335,17 @@ class user
     public function send_signup_email($user)
     {
         global $C;
-        $link = $this->create_signup_link($user->id);
-        email::send_email((object)[
-            'fromemail' => $C->site_email,
-            'fromusername' => $C->site_username,
-            'toemail' => $user->email,
-            'tousername' => $user->username,
-            'subject' => 'Confirm User Registration',
-            'body' => "Please click the below link to verify the email. <br> $link <br><br> $C->site_username"
-        ]);
+        if ($C->send_signup_email) {
+            $link = $this->create_signup_link($user->id);
+            email::send_email((object)[
+                'fromemail' => $C->site_email,
+                'fromusername' => $C->site_username,
+                'toemail' => $user->email,
+                'tousername' => $user->username,
+                'subject' => 'Confirm User Registration',
+                'body' => "Please click the below link to verify the email. <br> $link <br><br> $C->site_username"
+            ]);
+        }
     }
 
     public function create_signup_link($userid)

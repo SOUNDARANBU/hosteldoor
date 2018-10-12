@@ -350,7 +350,7 @@ class db
     public function update_db()
     {
         $this->create_tables();
-        $this->alter_tables();
+        //$this->alter_tables();
     }
 
     /** deletes all the data in a table

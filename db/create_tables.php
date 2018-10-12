@@ -1,6 +1,7 @@
 <?php
 function get_create_tables_sql(){
     $tables_sql = array(
+        //mqsql
         'config' => 'CREATE TABLE IF NOT EXISTS hdr_config(
                                                         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                                                         name VARCHAR(255),
@@ -15,9 +16,8 @@ function get_create_tables_sql(){
                                                      email VARCHAR(255) NOT NULL,
                                                      mobile VARCHAR(255) DEFAULT NULL,
                                                      city VARCHAR(255) DEFAULT NULL,
-                                                     active INT DEFAULT(1) NULL,
-                                                     deleted INT DEFAULT(0) NULL,
-                                                     confirmed INT DEFAULT(0) NULL,
+                                                     active INT DEFAULT 1 NULL,
+                                                     deleted INT DEFAULT 0 NULL,
                                                      timecreated BIGINT DEFAULT NULL,
                                                      timemodified BIGINT DEFAULT NULL,
                                                      CONSTRAINT Uni_user UNIQUE(id, username, email)
@@ -61,7 +61,7 @@ function get_create_tables_sql(){
                                                       roleid BIGINT NOT NULL,
                                                       timecreated BIGINT DEFAULT NULL,
                                                       timemodified BIGINT DEFAULT NULL
-                                                      )',
+                                                      )'
     );
     return $tables_sql;
 }

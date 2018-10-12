@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-info shadow fixed-top">
     <div id="sidebar-toggle" class="btn"><span class="navbar-toggler-icon"></span></div>
     <div class="nav-brand-holder">
-        <a class="navbar-brand" href="#">Bootstrap</a>
+        <a class="navbar-brand" href="#">Application Name</a>
     </div>
     <ul class="nav navbar nav-right-items">
         <span class="text-white"> <?php global $USER; echo $USER->firstname; ?></span>

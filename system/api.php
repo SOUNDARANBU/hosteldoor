@@ -72,8 +72,8 @@ function create_update_user()
         $user->lastname = \manager\page::optional_param('lastname');
         $user->email = \manager\page::optional_param('email');
         $user->mobile = \manager\page::optional_param('mobile');
-        $password = \manager\page::optional_param('password');
-        $user->password = isset($password) ? password_hash($password, PASSWORD_DEFAULT) : '';
+        $user->password = \manager\page::optional_param('password');
+        $user->confirm_password = \manager\page::optional_param('confirm-password');
 
         $status = \manager\user::update_user($user);
         if ($status->status == SUCCESS) {

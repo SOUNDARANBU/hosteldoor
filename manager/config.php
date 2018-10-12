@@ -1,13 +1,28 @@
 <?php
+
 namespace manager;
 
-class config {
+class config
+{
     public $configs;
+
     /**
      * Preloads all the configs to the $C global variable
      */
-    public function preload(){
+    public function preload()
+    {
         $configs = $this->get_all_configs();
+    }
+
+    /**Gets the value for the given config name
+     * @param string $name name of the config
+     * @return string|bool
+     */
+    public static function get($name)
+    {
+        global $DB;
+        $result = $DB->get_record('config', ['name' => $name]);
+        return isset($result->value) ? $result->value : false;
     }
 
     /** sets the config value if already exists
@@ -16,7 +31,8 @@ class config {
      * @param string|int $value value of the config
      * @param bool $create if config not found, should it be created ?
      */
-    public static function set($name, $value, $create = false) {
+    public static function set($name, $value, $create = false)
+    {
         global $DB;
         $record = $DB->get_record('config', ['name' => $name]);
         if ($record) {
@@ -31,27 +47,20 @@ class config {
      * @param string $name name of the config
      * @param string|int $value value of the config
      */
-    public static function add($name, $value) {
+    private static function add($name, $value)
+    {
         global $DB;
         $record = new \stdClass();
         $record->name = $name;
         $record->value = $value;
-        $DB->insert_record('config',$record);
-    }
-
-    /**Gets the value for the given config name
-     * @param string $name name of the config
-     */
-    public static function get($name) {
-        global $DB;
-        $result = $DB->get_record('config', ['name' => $name]);
-        return $result;
+        $DB->insert_record('config', $record);
     }
 
     /**
      * Get all the config from the database
      */
-    public static function get_all_configs(){
+    public static function get_all_configs()
+    {
         global $DB;
         $result = $DB->get_records('config');
         return $result;
