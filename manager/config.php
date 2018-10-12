@@ -20,7 +20,11 @@ class config
      */
     public static function get($name)
     {
-        global $DB;
+        global $DB, $C;
+        //if already loaded to the global variable return from there instead of db query
+        if (isset($C->configs[$name])) {
+            return $C->configs[$name];
+        }
         $result = $DB->get_record('config', ['name' => $name]);
         return isset($result->value) ? $result->value : false;
     }
@@ -30,6 +34,7 @@ class config
      * @param string $name name of the config
      * @param string|int $value value of the config
      * @param bool $create if config not found, should it be created ?
+     * @return bool
      */
     public static function set($name, $value, $create = false)
     {
@@ -37,15 +42,21 @@ class config
         $record = $DB->get_record('config', ['name' => $name]);
         if ($record) {
             $record->value = $value;
-            $DB->update_record('config', $record);
+            if ($DB->update_record('config', $record)) {
+                return true;
+            }
         } elseif ($create) {
-            self::add($name, $value);
+            if (self::add($name, $value)) {
+                return true;
+            }
         }
+        return false;
     }
 
     /** adds new config
      * @param string $name name of the config
      * @param string|int $value value of the config
+     * @return bool
      */
     private static function add($name, $value)
     {
@@ -53,7 +64,8 @@ class config
         $record = new \stdClass();
         $record->name = $name;
         $record->value = $value;
-        $DB->insert_record('config', $record);
+        $result = $DB->insert_record('config', $record);
+        return $result ? true : false;
     }
 
     /**
@@ -62,7 +74,7 @@ class config
     public static function get_all_configs()
     {
         global $DB;
-        $result = $DB->get_records('config');
+        $result = $DB->get_records('config', null, 'name, value', true);
         return $result;
     }
 }

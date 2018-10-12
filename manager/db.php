@@ -212,15 +212,15 @@ class db
     /** To get multiple records that matches a certain condition
      * @param string $table_name
      * @param array $params
-     * @param null $fields -> TODO
+     * @param string $fields eg: 'id,name,value'
      * @param null $sort -> TODO
      * @return bool
      */
-    public function get_records($table_name, $params = [], $fields = null, $sort = null)
+    public function get_records($table_name, $params = [], $fields = null, $keypair = false)
     {
         $table_name = $this->get_table_name_with_prefix($table_name);
         if (isset($table_name) && $this->table_exists($table_name)) {
-            $select = '*';
+            $select = empty($fields) ? '*' : $fields;
             $where = '';
             $count = 0;
             //prepare the query
@@ -235,7 +235,8 @@ class db
             //prepare the sql
             $data = $this->pdo->prepare($sql);
             $data->execute($params);
-            $data->setFetchMode(\PDO::FETCH_ASSOC);
+            $fetchmode = $keypair ? \PDO::FETCH_KEY_PAIR : \PDO::FETCH_ASSOC;
+            $data->setFetchMode($fetchmode);
             //fetch the result
             $result = $data->fetchAll();
             //returns array of object with unique key

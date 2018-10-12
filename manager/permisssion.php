@@ -26,6 +26,11 @@ class permisssion
      */
     public static function user_has_permission($permissionname, $userid)
     {
+        //if siteadmin always allow
+        $siteadmins = explode(',', config::get('siteadmins'));
+        if (in_array($userid, $siteadmins)) {
+            return true;
+        }
         if (isset($permissionname) && isset($userid)) {
             global $DB;
             $sql = 'select distinct p.*

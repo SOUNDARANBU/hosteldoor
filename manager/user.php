@@ -384,4 +384,10 @@ class user
         $deleted_users = $DB->get_records('user', ['deleted' => 1]);
         return $deleted_users;
     }
+
+    public static function is_site_admin(){
+        global $DB;
+        $siteadmins = config::get('siteadmins');
+        $siteadmins = $DB->get_records_sql();
+    }
 }
